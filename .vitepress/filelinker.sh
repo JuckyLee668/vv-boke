@@ -115,7 +115,9 @@ ftitle_end
 directory="../"
 
 # 使用 find 命令查找目录并排除文件
-folders=$(find "$directory" -maxdepth 1 -type d | grep -v '/\.')
+
+folders=$(find "$directory" -maxdepth 1 -type d ! -name "node_modules" ! -name ".." | grep -v '/\.')
+
 # 遍历并输出文件夹名字
 for folder in $folders; do
     mklist "$(basename "$folder")"
