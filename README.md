@@ -5,10 +5,7 @@ VitePress 是一个静态站点生成器 (SSG)，专为构建快速、以内容�
 # 本地安装
 
 ## 前提条件
-
-
-
-3. [Node.js](https://nodejs.org) 18 及以上版本
+1. [Node.js](https://nodejs.org) 18 及以上版本
 ### vitepress安装
 `npm install vitepress --save-dev`
 ### 安装向导
