@@ -95,10 +95,19 @@ function etitle(){
 })
 " >> "$temp_file"
 }
-
+# 打印前半固定部分
 ftitle
-mklist docs
-mklist tools
+# 打印中间目录
+directory="../"
+
+# 使用 find 命令查找目录并排除文件
+folders=$(find "$directory" -maxdepth 1 -type d | grep -v '/\.')
+# 遍历并输出文件夹名字
+for folder in $folders; do
+    mklist "$folder"
+done
+
+# 打印后半固定部分
 etitle
 
 target_file="config.mts"
