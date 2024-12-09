@@ -45,7 +45,7 @@ jobs:
           ./filelinker.sh
           cat config.mts
           cd ..
-          npm run docs:build # 打包前端代码到生产环境（目标路径为：server/public）
+          npm run docs:build # 打包前端代码到生产环境（目标路径为：./.vitepress/dist）
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
