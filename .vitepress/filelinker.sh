@@ -104,7 +104,7 @@ directory="../"
 folders=$(find "$directory" -maxdepth 1 -type d | grep -v '/\.')
 # 遍历并输出文件夹名字
 for folder in $folders; do
-    mklist "$folder"
+    mklist "$(basename "$folder")"
 done
 
 # 打印后半固定部分
