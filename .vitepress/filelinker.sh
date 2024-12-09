@@ -1,4 +1,4 @@
-function ftitle(){
+function ftitle_start(){
     echo "
 import { defineConfig } from 'vitepress'
 
@@ -23,15 +23,19 @@ export default defineConfig({
       }
     },
     nav: [
-      { text: '主页', link: '/' },
-      { text: '文档', link: '/docs/docs' },
-      { text: '工具', link: '/tools/tools' }
+    " >>"$temp_file"
+}
+function ftitle_middle(){
+  echo " { text: '$1', link: '$2' }$3">>"$temp_file"
+}
+function ftitle_end(){
+   echo "
     ],
 
     sidebar: {
-    " >>"$temp_file"
+    ">>"$temp_file"
+    
 }
-
 temp_file="temp.js"
 
 
@@ -47,7 +51,7 @@ function mklist(){
     # 生成内容到临时文件
     echo "'/$1/': [" >> "$temp_file"
     echo "  {" >> "$temp_file"
-    echo "    text: 'Docs'," >> "$temp_file"
+    echo "    text: '$1'," >> "$temp_file"
     echo "    items: [" >> "$temp_file"
 
     for ((i = 0; i < file_count; i++)); do
@@ -95,8 +99,18 @@ function etitle(){
 })
 " >> "$temp_file"
 }
+
+
+
+
+
 # 打印前半固定部分
-ftitle
+ftitle_start
+ftitle_middle "主页" "/" ,
+ftitle_middle "文档" "/docs/docs" ,
+ftitle_middle "工具" "/tools/tools"
+ftitle_end
+
 # 打印中间目录
 directory="../"
 
