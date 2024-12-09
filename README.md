@@ -15,7 +15,7 @@ VitePress 是一个静态站点生成器 (SSG)，专为构建快速、以内容�
 
 为简便上传项目并修改config.mts的过程，本项目创建`.vitepress/filelinker.sh` 并在Github Action中执行，使得只需要上传到对应文档中即可。
 
-需 注意 如果使用VScode之类编辑器，需要将右下角行尾序列改为LF。
+~~需 注意 如果使用VScode之类编辑器，需要将右下角行尾序列改为LF~~(windows \r\n 与linux \n 换行符号不同 增加 ` tr -d '\r' `以去除)。
 
 
 ## github配置
