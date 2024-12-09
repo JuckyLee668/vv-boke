@@ -58,7 +58,7 @@ function docs(){
         link="/docs/${name_without_ext}" # 拼接 link
 
         # 提取第一个 # 后的标题
-        first_heading=$(grep -m 1 '^# ' "$file" | sed 's/^# //')
+        first_heading=$(grep -m 1 '^# ' "$file" | sed 's/^# //' | tr -d '\n')
 
         # 如果没有找到标题，则使用文件名作为 text
         text="${first_heading:-$name_without_ext}"
@@ -99,7 +99,8 @@ function tools(){
         link="/tools/${name_without_ext}" # 拼接 link
 
         # 提取第一个 # 后的标题
-        first_heading=$(grep -m 1 '^# ' "$file" | sed 's/^# //')
+        first_heading=$(grep -m 1 '^# ' "$file" | sed 's/^# //' | tr -d '\n')
+
 
         # 如果没有找到标题，则使用文件名作为 text
         text="${first_heading:-$name_without_ext}"
