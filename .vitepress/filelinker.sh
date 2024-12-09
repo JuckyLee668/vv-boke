@@ -40,7 +40,7 @@ temp_file="temp.js"
 function docs(){
     directory="../docs"
 
-    files=("$directory"/*)
+    files=("$directory"/*.md)
     file_count=${#files[@]} # 文件总数
 
 
@@ -81,7 +81,7 @@ function docs(){
 function tools(){
     directory="../tools"
 
-    files=("$directory"/*)
+    files=("$directory"/*.md)
     file_count=${#files[@]} # 文件总数
 
 
