@@ -2,65 +2,96 @@
 # [什么是VitePress](https://vitepress.dev/)
 VitePress 是一个静态站点生成器 (SSG)，专为构建快速、以内容为中心的站点而设计。简而言之，VitePress 获取用 Markdown 编写的内容，对其应用主题，并生成可以轻松部署到任何地方的静态 HTML 页面。
 
-# 使用 GitHub Actions 自动化构建和推送 VitePress 文档
+# 本地安装
 
 ## 前提条件
 
+
+
+3. [Node.js](https://nodejs.org) 18 及以上版本
+### vitepress安装
+`npm install vitepress --save-dev`
+### 安装向导
+`npx vitepress init`
+
+### 配置文件
+在`.vitepress/config.mts`
+
+为简便上传项目并修改config.mts的过程，本项目创建`.vitepress/filelinker.sh` 并在Github Action中执行，使得只需要上传到对应文档中即可
+
+
+## github配置
 1. 确保你已经在 GitHub 仓库的 `Secrets` 中添加了名为 `PUSH_KEY` 的密钥，其值为你的 GitHub 个人访问令牌，并且该令牌具有推送权限。
 2. 确保你的个人访问令牌具有以下权限：
    - `repo`（访问公共和私有仓库的全部控制权限）
    - `workflow`（更新 GitHub Actions 工作流）
 
-## GitHub Actions 配置文件
-
-在你的仓库中创建一个 GitHub Actions 配置文件（例如 `.github/workflows/deploy.yml`），并添加以下内容：
+### 配置workflows文件
+`.github/workflows/deploy.yml`
 
 ```yaml
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+run-name: build & deploy boke.xi-han.top
+on:
+    # 在针对 `main` 分支的推送上运行。如果你
+    # 使用 `master` 分支作为默认分支，请将其更改为 `master`
+    push:
+      branches: [main]
+  
+    # 允许你从 Actions 选项卡手动运行此工作流程
+    workflow_dispatch:
+  
+  # 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+  
+  # 只允许同时进行一次部署，跳过正在运行和最新队列之间的运行队列
+  # 但是，不要取消正在进行的运行，因为我们希望允许这些生产部署完成
+concurrency:
+    group: pages
+    cancel-in-progress: false
 jobs:
-  Explore-GitHub-Actions:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          node-version: 20 # 指定node版本
+          fetch-depth: 0 # 如果未启用 lastUpdated，则不需要
+      # - uses: pnpm/action-setup@v2 # 如果使用 pnpm，请取消注释
+      # - uses: oven-sh/setup-bun@v1 # 如果使用 Bun，请取消注释
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm # 或 pnpm / yarn
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
       - name: Install dependencies
-        run: npm install
-      - name: Install vitepress
-        run: npm add -D vitepress # 安装依赖
-      - name: Build
-        run: npm run docs:build # 使用vitepress构建文档
-      - name: Push
-        env: # PUSH 权限要求
-          GITHUB_TOKEN: ${{ secrets.PUSH_KEY }}
+        run: npm ci # 或 pnpm install / yarn install / bun install
+      - name: Build with VitePress
         run: |
-          git config --global user.email "2794920709@qq.com"
-          git config --global user.name "JuckyLee668"
-          git clone https://JuckyLee668:${{ secrets.PUSH_KEY }}@github.com/JuckyLee668/vv.git
-          cd vv
-          mkdir -p note
-          cp -r ../.vitepress/dist/* note/
-          git add note
-          git commit -m "github action auto push"
-          git push origin main
+          cd .vitepress
+          chmod +x filelinker.sh
+          ./filelinker.sh
+          cat config.mts
+          cd ..
+          npm run docs:build # 打包前端代码到生产环境（目标路径为：./.vitepress/dist）
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./.vitepress/dist
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
         
 ```
-
-## 说明
-
-1. **设置节点环境**：使用 `actions/setup-node@v3` 设置 Node.js 环境，指定 Node.js 版本为 20。
-2. **安装依赖**：运行 `npm install` 安装项目依赖。
-3. **安装 VitePress**：运行 `npm add -D vitepress` 安装 VitePress 作为开发依赖。
-4. **构建文档**：运行 `npm run docs:build` 构建 VitePress 文档。
-5. **推送构建结果**：
-   - 配置 Git 用户名和邮箱。
-   - 克隆目标仓库 `vv`。
-   - 将构建后的文件复制到目标仓库的 `note` 目录下。
-   - 提交并推送更改到目标仓库的 `main` 分支。
-
-通过以上配置，GitHub Actions 将在每次推送代码时自动构建 VitePress 文档并将其推送到目标仓库的 `note` 目录下。
