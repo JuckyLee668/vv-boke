@@ -4,8 +4,8 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: '/note/',
-  //base: '/./', 
+  //base: '/note/',
+  base: '/./', 
   title: \"学，行之，上也\",
   description: \"欢迎来到淅寒的博客\",
   lastUpdated: true,
