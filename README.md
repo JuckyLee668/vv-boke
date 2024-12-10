@@ -1,4 +1,4 @@
-本文档为介绍如何使用 GitHub Actions 自动化构建 VitePress 文档并将其推送到另一个 GitHub 仓库的 `note` 目录下。
+本文档为介绍如何在本地构建 VitePress 并在 GitHub Actions 自动化发布到个人页面
 # [什么是VitePress](https://vitepress.dev/)
 VitePress 是一个静态站点生成器 (SSG)，专为构建快速、以内容为中心的站点而设计。简而言之，VitePress 获取用 Markdown 编写的内容，对其应用主题，并生成可以轻松部署到任何地方的静态 HTML 页面。
 
@@ -13,7 +13,7 @@ VitePress 是一个静态站点生成器 (SSG)，专为构建快速、以内容�
 ### 配置文件
 在`.vitepress/filelinker.sh`
 
-为简便上传项目并修改config.mts的过程，本项目创建`.vitepress/filelinker.sh` 并在Github Action中执行，使得只需要上传到对应文档中即可。
+为简便上传项目并修改config.mts的过程，本项目创建`.vitepress/filelinker.sh` 并在Github Action中执行，使得只需要在根目录中创建文件夹并在`.vitepress/links.txt`修改。
 
 ~~需 注意 如果使用VScode之类编辑器，需要将右下角行尾序列改为LF~~(windows \r\n 与linux \n 换行符号不同 增加 ` tr -d '\r' `以去除)。
 
