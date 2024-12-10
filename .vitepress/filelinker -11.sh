@@ -25,15 +25,9 @@ export default defineConfig({
     nav: [
     " >>"$temp_file"
 }
-
-generate_links() {
-    if [[ -n "$3" ]]; then
-        echo "{ text: '$1', link: '$2' },"
-    else
-        echo "{ text: '$1', link: '$2' }"
-    fi
+function ftitle_middle(){
+  echo " { text: '$1', link: '$2' }$3">>"$temp_file"
 }
-
 function ftitle_end(){
    echo "
     ],
@@ -112,25 +106,9 @@ function etitle(){
 
 # 打印前半固定部分
 ftitle_start
-
-# 从文件中读取内容并传递给函数
-count=0
-total_lines=$(wc -l < links.txt)
-
-while IFS=' ' read -r text link; do
-    count=$((count + 1))
-    if [[ $count -eq 1 || $count -eq $total_lines ]]; then
-        continue
-    fi
-    if [[ -n "$text" && -n "$link" ]]; then
-        if [[ $count -lt $(($total_lines -2)) ]]; then
-            generate_links "$text" "$link" "comma"
-        else
-            generate_links "$text" "$link"
-        fi
-    fi
-done < links.txt
-
+ftitle_middle "主页" "/" ,
+ftitle_middle "文档" "/docs/docs" ,
+ftitle_middle "工具" "/tools/tools"
 ftitle_end
 
 # 打印中间目录
