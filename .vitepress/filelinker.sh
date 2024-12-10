@@ -123,7 +123,7 @@ while IFS=' ' read -r text link; do
         continue
     fi
     if [[ -n "$text" && -n "$link" ]]; then
-        if [[ $count -lt $(($total_lines -2)) ]]; then
+        if [[ $count -lt $(($total_lines -1)) ]]; then
             generate_links "$text" "$link" "comma"
         else
             generate_links "$text" "$link"
