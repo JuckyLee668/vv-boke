@@ -26,7 +26,7 @@ export default defineConfig({
     " >>"$temp_file"
 }
 
-generate_links() {
+function generate_links() {
     if [[ -n "$3" ]]; then
         echo "{ text: '$1', link: '$2' },"
     else
