@@ -8,11 +8,11 @@ hero:
   tagline: 士之读书岂专为利禄而已哉？求得位而行其道以利斯民也。国家所以求士者，岂徒用印绶粟帛富宠其人哉？亦欲得其道以利民也。
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: VitePress 使用教程
+      link: /docs/docs.html
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: 常用软件
+      link: /tools/tools.html
 
 features:
   - title: 文档
