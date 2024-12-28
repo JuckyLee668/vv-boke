@@ -17,10 +17,7 @@ export default defineConfig({
     },
     lastUpdated: {
       text: 'Updated at',
-      formatOptions: {
-        dateStyle: 'full',
-        timeStyle: 'medium'
-      }
+     
     },
     nav: [
     " >>"$temp_file"
