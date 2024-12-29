@@ -165,7 +165,11 @@ sequelize model:generate --name Article --attributes title:string,content:text
 sequelize db:migrate
 
 ```
+### 迁移撤回
+```
+sequelize db:migrate:undo
 
+```
 ### 种子文件
 创建
 ```
