@@ -514,11 +514,14 @@ function fliterBody(req) {
 - MySQL
 - Nginx
 
+### 上传GitHub并克隆到服务器
 
-### 网站node部署
+上传时候需要排除node_models
+服务器生成密钥（bash:   ssh-keygen）并绑定到仓库
 
-- 启动选项：pm2 start ./bin/www
 ### 数据库迁移
+设置数据库密码并在config/config修改
+.env 设置为production
 ```bash
 
 npx sequelize-cli db:create --charset utf8mb4 --collate utf8mb4_general_ci --env production
@@ -528,3 +531,7 @@ npx sequelize-cli db:migrate --env production
 npx sequelize-cli db:seed:all --env production
 
 ```
+
+### 网站node部署
+
+-  启动选项（自定义）：pm2 start ./bin/www
