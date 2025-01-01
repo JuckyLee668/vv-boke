@@ -58,7 +58,7 @@ npm install bcryptjs
 ```
 
 ### models中修改
-```
+```js
 const bcrypt = require('bcryptjs');
 
 set(value) {
@@ -151,3 +151,232 @@ router.delete('/:id', async function (req, res, next) {
 
 ```
 
+## 数据汇总（注册事件、性别比例）
+```js
+const express = require('express');
+const router = express.Router();
+const { User } = require('../models'); // 确保路径正确
+const { success, failure } = require('../utils/response');
+const { sequelize } = require('../models');
+
+// 获取用户性别统计数据
+router.get('/gender', async (req, res) => {
+    try {
+        const male = await User.count({
+            where: {
+                sex: 1
+            }
+        });
+        const female = await User.count({
+            where: {
+                sex: 0
+            }
+        });
+        const unknown = await User.count({
+            where: {
+                sex: 2
+            }
+        });
+        const data = [
+            { value: male, name: '男' },
+            { value: female, name: '女' },
+            { value: unknown, name: '未知' }
+        ];
+        success(res, '数据查询成功', data);
+    } catch (err) {
+        failure(res, '数据查询失败', [err.message]);
+    }
+});
+
+// 获取每个月的注册用户数量
+router.get('/monthly-users', async (req, res) => {
+    try {
+        const data = await sequelize.query(
+            `SELECT DATE_FORMAT(createdAt, '%Y-%m') AS month, COUNT(*) AS value
+             FROM Users
+             GROUP BY month
+             ORDER BY month ASC`,
+            { type: sequelize.QueryTypes.SELECT }
+        );
+        success(res, '数据查询成功', data);
+    } catch (err) {
+        failure(res, '数据查询失败', [err.message]);
+    }
+});
+
+module.exports = router;
+
+```
+
+
+## 用户登录
+
+### 身份、密码验证
+```js
+const express = require('express');
+const router = express.Router();
+const { Op } = require('sequelize');
+const {User} = require('../../models');
+
+const bcrypt = require('bcryptjs');
+router.post('/login', async(req, res) => {
+    try {
+        const { login, password } = req.body;
+        if (!login) {
+            throw new Error('请输入用户名或邮箱');
+        } 
+        if(!password){
+            throw new Error('请输入密码');
+        }
+        const condition = {
+            where: {
+                [Op.or] : [
+                    {
+                        username: login
+                    },
+                    {
+                        email: login
+                    }
+                ]
+            }
+        };
+
+        const user = await User.findOne(condition);
+        if(!user)
+        {
+            throw new Error('用户不存在');
+        }
+        if(user.role !== 99)
+        {
+            throw new Error('无权限登录');
+        }
+        const isPasswordValid = bcrypt.compareSync(password, user.password);
+        if(!isPasswordValid)
+        {
+            throw new Error('密码错误');
+        }
+
+        res.json({
+            status: true,
+            message: '登录成功',
+            data: {
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: '登录失败',
+            errors: [error.message]
+        });
+    }
+});
+
+module.exports = router;
+
+```
+
+### token生成
+```js
+//安装包
+npm i jsonwebtoken
+
+//引用包
+const jwt = require('jsonwebtoken');
+
+const token = jwt.sign({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role
+        }, process.env.JWT_SECRET, {
+            expiresIn: '2h'
+});
+
+```
+
+### .env环境变量
+```js
+//1 安装包
+npm i dotenv
+//2  根目录下创建.env
+JWT_SECRET='Hello'
+//3 app.js中引入
+require('dotenv').config();
+//4 重启npm
+```
+
+### 密钥生成crypto
+```js
+const crypto = require('crypto');
+
+console.log(crypto.randomBytes(32).toString('hex'));
+```
+### 前置验证
+
+```js
+const jwt = require('jsonwebtoken');
+const {User} = require('../models');
+const secretKey = process.env.JWT_SECRET; // Replace with your actual secret key
+
+
+
+module.exports = async (req, res, next) => {
+    try{
+        const { token } = req.headers;
+        if(!token){
+            return res.status(401).json({ message: 'Access denied. No token provided.' });
+        }
+        const decoded = jwt.verify(token, secretKey);
+        if(decoded.role !== 99){
+            return res.status(403).json({ message: 'Access denied. Not an admin.' });
+        }
+        req.user = decoded;
+        next();
+    }catch(error){
+        res.status(400).json({ message: 'Invalid token.' });
+    }
+}
+
+```
+#### 导入并使用
+```js
+const adminAuth = require('./middlewares/admin-auth');
+
+
+app.use('/admin/articles', adminAuth,adminArticlesRouter);
+app.use('/admin/categories',adminAuth, adminCategoriesRouter);
+app.use('/admin/settings', adminAuth,adminSettingRouter);
+```
+
+### 提取用户ID
+```js
+const body = {};
+        const fields = ['categoryId', 'userId', 'name', 'image', 'recommended', 'introductory', 'content', 'likesCount', 'chaptersCount'];
+        fields.forEach(field => {
+            if (req.body[field]) body[field] = req.body[field];
+            if(field ==='userId') body[field] = req.user.id;//改为当前登录用户的id
+        });
+        
+```
+## 跨域解决
+```js
+//1 安装包
+npm i cors
+//2 导入
+const cors = require('cors');
+
+```
+### 允许所有源
+```js
+//app.js中使用cors
+app.use(cors());
+```
+### 允许特定源
+```js
+//可设置特定域名，需配置环境变量
+const corsOptions = {
+    origin: process.env.CORS_ORIGIN,
+    optionsSuccessStatus: 200
+}
+app.use(cors());
+```
