@@ -505,3 +505,26 @@ function fliterBody(req) {
       }
     },
 ```
+
+
+## 项目部署
+
+- 宝塔
+- Node.js版本管理器 2.6
+- MySQL
+- Nginx
+
+
+### 网站node部署
+
+- 启动选项：pm2 start ./bin/www
+### 数据库迁移
+```bash
+
+npx sequelize-cli db:create --charset utf8mb4 --collate utf8mb4_general_ci --env production
+
+npx sequelize-cli db:migrate --env production
+
+npx sequelize-cli db:seed:all --env production
+
+```

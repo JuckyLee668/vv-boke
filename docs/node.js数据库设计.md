@@ -380,3 +380,4 @@ const corsOptions = {
 }
 app.use(cors());
 ```
+
