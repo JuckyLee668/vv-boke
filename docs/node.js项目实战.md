@@ -461,8 +461,39 @@ router.get('/', async function (req, res, next) {
 })
 
 ```
+#### 多条件查询
+```js
+if (username) {
+            condition.where = {
+                username: {
+                    [Op.like]: `%${username}%`
+                }
+            };
+        }
+        if(req.query.role){
+            condition.where = {
+                role: req.query.role
+            };
+        }
+        if(req.query.nickname)
+        {
+            condition.where = {
+                nickname: {
+                    [Op.like]: `%${req.query.nickname}%`
+                }
+            };
+        }
+        if(req.query.email)
+        {
+            condition.where = {
+                email: {
+                    [Op.like]: `%${req.query.email}%`
+                }
+            };
+        }  
+```
 
-### 3.白名单过滤
+### 4.白名单过滤
 直接函数内过滤
 ```js
 const body = {
@@ -484,7 +515,7 @@ function fliterBody(req) {
 }
 ```
 
-### 4.验证表单数据
+### 5.验证表单数据
 
 修改`models`下的article.js
 ```js
@@ -505,8 +536,103 @@ function fliterBody(req) {
       }
     },
 ```
+### 6.添加章节时修改课程内数量
+```js
+const chapter = await Chapter.create(body);
+await Course.increment('chaptersCount', { where: { id: body.courseId } });//增加1
+success(res, '数据创建成功', chapter, 201);
 
+```
 
+```js
+await chapter.destroy();
+await Course.decrement('chaptersCount', { where: { id: chapter.courseId } });//减少1
+res.send('Chapter deleted');
+```
+### 7.http-errors
+```js
+//1.安装http-errors
+npm i http-errors
+//2.response,js统一处理
+const createError = require('http-errors');
+
+function failure(res, message, errors, status) {
+    
+    if(errors instanceof createError.HttpError){
+        return res.status(errors.status).json({
+            status: status || false,
+            message: message || '数据操作失败',
+            errors: [errors.message]
+        });
+    }
+    res.json({
+        status: status || false,
+        message: message || '数据操作失败',
+        errors: errors
+    });
+}
+
+//3.文件中使用
+// Get a course by ID
+const {NotFound} = require('http-errors');
+router.get('/:id', async (req, res) => {
+    try {
+        const condition = getCondition();
+        const course = await Course.findByPk(req.params.id,condition);
+        if (course) {
+            success(res, '数据查询成功', course);
+        } else {
+            throw new NotFound('未查询到相关课程');
+        }
+    } catch (err) {
+        failure(res, '数据查询失败', err);
+    }
+});
+
+```
+|Status Code  状态代码|Constructor Name  构造函数名称|
+|---|---|
+|400|BadRequest  错误请求|
+|401|Unauthorized  未经 授权|
+|402|PaymentRequired  付款要求|
+|403|Forbidden  禁止|
+|404|NotFound  未找到|
+|405|MethodNotAllowed|
+|406|NotAcceptable  不可接受|
+|407|ProxyAuthenticationRequired  <br>ProxyAuthentication必需|
+|408|RequestTimeout  请求超时|
+|409|Conflict  冲突|
+|410|Gone  逝|
+|411|LengthRequired  LengthRequired （长度必需）|
+|412|PreconditionFailed|
+|413|PayloadTooLarge  PayloadTooLarge （有效载荷太大）|
+|414|URITooLong|
+|415|UnsupportedMediaType  不支持的 MediaType|
+|416|RangeNotSatisfiable|
+|417|ExpectationFailed  期望失败|
+|418|ImATeapot|
+|421|MisdirectedRequest  误导请求|
+|422|UnprocessableEntity  UnprocessableEntity （无法处理实体）|
+|423|Locked  锁|
+|424|FailedDependency|
+|425|TooEarly  太早|
+|426|UpgradeRequired  UpgradeRequired （升级必需）|
+|428|PreconditionRequired  先决条件Required|
+|429|TooManyRequests  TooMany请求|
+|431|RequestHeaderFieldsTooLarge|
+|451|UnavailableForLegalReasons|
+|500|InternalServerError  InternalServer错误|
+|501|NotImplemented  未实现|
+|502|BadGateway  BadGateway 网关|
+|503|ServiceUnavailable  Service不可用|
+|504|GatewayTimeout  网关超时|
+|505|HTTPVersionNotSupported|
+|506|VariantAlsoNegotiates|
+|507|InsufficientStorage  存储空间不足|
+|508|LoopDetected  循环检测|
+|509|BandwidthLimitExceeded  超出带宽限制|
+|510|NotExtended|
+|511|NetworkAuthenticationRequired  <br>NetworkAuthentication必需|
 ## 项目部署
 
 - 宝塔
