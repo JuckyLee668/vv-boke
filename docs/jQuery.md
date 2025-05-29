@@ -65,6 +65,7 @@ $('ul span').css('background', 'red'); //选择ul下的所有span元素
 - 在元素上移动鼠标。
 - 选取单选按钮
 - 点击元素
+
 |鼠标事件|键盘事件|表单事件|文档/窗口事件|
 |---|---|---|---|
 |[click](https://www.runoob.com/jquery/event-click.html)|[keypress](https://www.runoob.com/jquery/event-keypress.html)|[submit](https://www.runoob.com/jquery/event-submit.html)|[load](https://www.runoob.com/jquery/event-load.html)|
