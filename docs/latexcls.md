@@ -5,6 +5,19 @@
 [参考文件](/docs/latexfcls.pdf)
 ![参考文件](/docs/latexofcls.png)
 
+## 常见命令
+
+### 自定义变量
+
+### 定义文档类型下的不同格式
+```latex
+\newif\ifmasterdegree %%此处创建一个masterdegree的条件变量false，true
+
+\documentclass[bachelor]{swjtuthesis}
+\DeclareOption{doctor}{\@swjtu@doctortrue\@swjtu@masterfalse\@swjtu@bachelorfalse}
+
+```
+
 ## 1. 基本结构
 
 一个简单的 `.cls` 文件通常包含以下基本结构：
