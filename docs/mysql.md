@@ -117,7 +117,7 @@ node-mysql-app/
 
 ```bash
 # 数据库连接配置
-DB_HOST=localhost
+DB_HOST=127.0.0.1
 DB_USER=nodeuser
 DB_PASSWORD=password123
 DB_NAME=node_app
@@ -244,15 +244,69 @@ class User {
 module.exports = User;
 ```
 
+```javascript
+//createUser.js
+const User = require('./models/User');
+
+const newUser = {
+  name: '张三',
+  email: 'zhangsan@example.com',
+  age: 28
+};
+
+User.create(newUser, (error, results) => {
+  if (error) {
+    console.error('创建用户失败:', error);
+    return;
+  }
+  console.log('创建成功，用户ID:', results.insertId);
+});
+```
+```javascript
+// findAllUsers.js
+const User = require('./models/User');
+
+const page = 2;  // 第2页
+const limit = 10; // 每页10条
+
+User.findWithPagination(page, limit, (error, results) => {
+  if (error) {
+    console.error('分页查询失败:', error);
+    return;
+  }
+  console.log(`第${page}页用户数据:`, results);
+});
+```
 ### 3. 路由使用示例 (routes/users.js)
 
 ```javascript
 const express = require('express');
-const router = express.Router();
 const User = require('../models/User');
 
+const app = express();//创建 Express 应用
+const port = 3000;
+
+// 中间件
+app.use(express.json()); // 解析 JSON 请求体
+app.use(express.urlencoded({ extended: true })); // 解析 URL 编码请求体
+
+// 根路径
+app.get('/', (req, res) => {
+  res.json({
+    message: '用户管理API服务器',
+    version: '1.0.0',
+    endpoints: {
+      'GET /users': '获取所有用户',
+      'GET /users/:id': '获取单个用户',
+      'POST /users': '创建用户',
+      'PUT /users/:id': '更新用户',
+      'DELETE /users/:id': '删除用户'
+    }
+  });
+});
+
 // 获取所有用户
-router.get('/', (req, res) => {
+app.get('/users', (req, res) => {
   User.findAll((err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -262,7 +316,7 @@ router.get('/', (req, res) => {
 });
 
 // 获取单个用户
-router.get('/:id', (req, res) => {
+app.get('/users/:id', (req, res) => {
   User.findById(req.params.id, (err, results) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -275,7 +329,7 @@ router.get('/:id', (req, res) => {
 });
 
 // 创建用户
-router.post('/', (req, res) => {
+app.post('/users', (req, res) => {
   const { name, email, age } = req.body;
   
   if (!name || !email) {
@@ -294,7 +348,7 @@ router.post('/', (req, res) => {
 });
 
 // 更新用户
-router.put('/:id', (req, res) => {
+app.put('/users/:id', (req, res) => {
   const { name, email, age } = req.body;
   
   User.update(req.params.id, { name, email, age }, (err, result) => {
@@ -309,7 +363,7 @@ router.put('/:id', (req, res) => {
 });
 
 // 删除用户
-router.delete('/:id', (req, res) => {
+app.delete('/users/:id', (req, res) => {
   User.delete(req.params.id, (err, result) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -321,11 +375,21 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-module.exports = router;
+// 启动服务器
+app.listen(port, () => {
+  console.log(`用户管理API服务器已启动，端口：${port}`);
+  console.log(`可以访问以下接口：`);
+  console.log(`- GET    http://localhost:${port}/users      - 获取所有用户`);
+  console.log(`- GET    http://localhost:${port}/users/:id  - 获取单个用户`);
+  console.log(`- POST   http://localhost:${port}/users      - 创建用户`);
+  console.log(`- PUT    http://localhost:${port}/users/:id  - 更新用户`);
+  console.log(`- DELETE http://localhost:${port}/users/:id  - 删除用户`);
+});
+
 ```
 
 ## 连接池使用
-
+连接池可以有效地管理数据库连接，避免频繁创建和销毁连接带来的性能损耗。
 ### 1. 连接池配置
 
 ```javascript
@@ -363,7 +427,10 @@ module.exports = pool;
 ```
 
 ### 2. 使用连接池
-
+Promise 封装特点
+- 所有方法都返回 Promise 对象
+- 替代回调函数，支持 async/await 语法
+- 使异步代码更易读和维护
 ```javascript
 // models/UserPool.js
 const pool = require('../config/pool');
@@ -396,6 +463,7 @@ class UserPool {
   }
 
   // 事务示例
+  // 适用场景：需要保证一组操作要么全部成功，要么全部失败
   static createWithTransaction(userData) {
     return new Promise((resolve, reject) => {
       pool.getConnection((err, connection) => {
