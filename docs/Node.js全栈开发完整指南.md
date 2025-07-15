@@ -221,6 +221,7 @@ sequelize db:create
 ```
 
 ### 数据模型设计
+使用 https://dbdiagram.io/ 进行可视化建模
 
 #### 核心模型创建
 ```bash
