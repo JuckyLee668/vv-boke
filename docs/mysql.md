@@ -50,13 +50,25 @@ sudo systemctl start mysql
 
 # 设置开机自启
 sudo systemctl enable mysql
+
+# 查看运行状态
+systemctl status mysql
 ```
 
 ### 2. 创建数据库和用户
 
 ```sql
--- 登录 MySQL
-mysql -u root -p
+-- 登录 MySQL 在默认安装时如果没有让我们设置密码，则直接回车就能登录成功。
+sudo mysql -uroot -p
+-- 设置密码 mysql8.0
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '新密码';
+-- 设置密码 mysql5.7
+set password=password('新密码');
+-- 刷新缓存
+flush privileges;
+-- 退出
+exit
+
 
 -- 创建数据库
 CREATE DATABASE node_app;
