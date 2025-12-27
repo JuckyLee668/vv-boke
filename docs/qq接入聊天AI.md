@@ -33,10 +33,10 @@ curl -o napcat.sh https://nclatest.znin.net/NapNeko/NapCat-Installer/main/script
 screen -dmS napcat bash -c "xvfb-run -a /root/Napcat/opt/QQ/qq --no-sandbox"
 ```
 - 访问  Napcat WebUI
-  打开浏览器，访问 `http://<your-host>:6099/webui/`，使用 在 /root/Napcat/opt/QQ/resources/app/app_launcher/napcat/config/webui.json 中的 Token 登录。
+  打开浏览器，访问 `http://<your-host>:6099/webui/`，使用在 `/root/Napcat/opt/QQ/resources/app/app_launcher/napcat/config/webui.json` 中的 Token 登录。
 
 - 配置 WebSocket 客户端
-登陆后左侧网络配置中添加 ws 客户端，填写 AstrBot 的 URL（例如 `ws://<your-host>:6199/ws`）和 Token。
+登陆后左侧网络配置中添加 ws 客户端，填写 AstrBot 的 URL（例如 `ws://127.0.0.1:6199/ws`）和 Token。
 
 Napcat 相关信息
 
@@ -74,10 +74,10 @@ bash <(curl -sSL https://raw.githubusercontent.com/zhende1113/Antlia/refs/heads/
 ```
 
 - 访问 WebUI
-  打开浏览器，访问 `http://<your-host>:6199/webui/`，使用初始账号 astrbot 和密码 astrbot 登录。
+  打开浏览器，访问 `http://<your-host>:6185`，使用初始账号 astrbot 和密码 astrbot 登录。
 
 - 配置机器人
-  在机器人中添加平台类别（onebot），配置好 NapcatQQ 中设置的 WebSocket 地址（例如 `ws://<your-host>:6099/ws`）和 Token。
+  在机器人中添加平台类别（onebot），配置好 NapcatQQ 中设置的 WebSocket 地址（例如 `ws://127.0.0.1:6199/ws`）和 Token。
 
 - 配置模型
     根据你的 AI 服务类型（如本地 LLM、远程 API 等），在 AstrBot 中添加相应的模型配置。
