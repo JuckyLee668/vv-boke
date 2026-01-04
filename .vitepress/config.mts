@@ -1,8 +1,37 @@
 import { defineConfig } from 'vitepress'
+// .vitepress/config.js
+import fs from 'fs'
+import path from 'path'
 
+function generateSidebarFromFS() {
+  const docsDir = path.resolve(__dirname, '..');
+  const items = [];
+
+  const dirs = fs.readdirSync(docsDir).filter(f =>
+    fs.statSync(path.join(docsDir, f)).isDirectory() &&
+    !f.startsWith('.') &&
+    f !== '.vitepress'
+  ).sort();
+
+  for (const dir of dirs) {
+    const files = fs.readdirSync(path.join(docsDir, dir))
+      .filter(f => f.endsWith('.md') && f !== 'index.md')
+      .map(f => f.replace(/\.md$/, ''))
+      .sort();
+
+    if (files.length > 0) {
+      items.push({
+        text: dir,
+        link: `/${dir}/`,
+        items: files.map(f => ({ text: f, link: `/${dir}/${f}` }))
+      });
+    }
+  }
+
+  return items;
+}
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  //base: '/note/',
   base: '/./', 
   title: "学，行之，上也",
   description: "欢迎来到淅寒的博客",
@@ -21,52 +50,13 @@ export default defineConfig({
       }
     },
     nav: [
-      { text: '主页', link: '/' },
-      { text: '文档', link: '/docs/docs' },
-      { text: '工具', link: '/tools/tools' }
+      { text: 'Home', link: '/' },
+      { text: '文档', link: '/docs/index.md' }
     ],
 
-    sidebar: {
-
-      // 当用户位于根目录时，会显示此侧边栏
-      
-
-      // 当用户位于 `docs` 目录时，会显示此侧边栏
-      '/docs/': [
-        {
-          text: 'Docs',
-          items: [
-            { text: 'VitePress 使用教程', link: '/docs/docs' },
-            { text: 'latex初级入门', link: '/docs/latex' },
-            { text: 'latex cls文件编写教程', link: '/docs/latexcls' },
-            { text: 'Linux', link: '/docs/linuxnew' },
-            { text: 'HarmonyNext UI', link: '/docs/harmonyNextUI' },
-            { text: 'Openharmony 编译', link: '/docs/openharmony' },
-	    { text: 'MQTT协议', link: '/docs/MQTT' }
-          ]
-        }
-      ],
-
-      // 当用户位于 `tools` 目录时，会显示此侧边栏
-      '/tools/': [
-        {
-          text: 'Tools',
-          items: [
-            { text: 'Index', link: '/tools/' },
-            { text: 'Three', link: '/tools/three' },
-            { text: 'Four', link: '/tools/four' }
-          ]
-        }
-      ]
-    },
-  
+    sidebar: generateSidebarFromFS(),
     socialLinks: [
       { icon: 'github', link: 'https://github.xi-han.top/JuckyLee668' }
-     ]
-    //,
-    // footer: {
-    //   message: 'Released under the <a href="https://github.com/vuejs/vitepress/blob/main/LICENSE">MIT License</a>.',
-    //   copyright: 'Copyright © 2019-present <a href="https://github.com/yyx990803">Evan You</a>'
-    // }
+    ]
   }
 })
