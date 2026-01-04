@@ -40,11 +40,11 @@ jobs:
         run: npm ci # 或 pnpm install / yarn install / bun install
       - name: Build with VitePress
         run: |
-          cd .vitepress
-          chmod +x filelinker.sh
-          ./filelinker.sh
-          cat config.mts
-          cd ..
+          # cd .vitepress
+          # chmod +x filelinker.sh
+          # ./filelinker.sh
+          # cat config.mts
+          # cd ..
           npm run docs:build # 打包前端代码到生产环境（目标路径为：./.vitepress/dist）
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
