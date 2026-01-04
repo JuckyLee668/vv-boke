@@ -1,3 +1,4 @@
 /code/node_mysql/node_modules
 /.vitepress/cache
 /.obsidian
+/node_modules
