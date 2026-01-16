@@ -11,11 +11,73 @@ VitePress 是一个静态站点生成器 (SSG)，专为构建快速、以内容�
 - `npx vitepress init`
 
 ### 配置文件
-在`.vitepress/filelinker.sh`
+在`.vitepress/config.mts`中添加如下配置
+```ts
+import { defineConfig } from 'vitepress'
+// .vitepress/config.js
+import fs from 'fs'
+import path from 'path'
 
-为简便上传项目并修改config.mts的过程，本项目创建`.vitepress/filelinker.sh` 并在Github Action中执行，使得只需要在根目录中创建文件夹并在`.vitepress/links.txt`修改。
+function generateSidebarFromFS() {
+  const docsDir = path.resolve(__dirname, '..');
+  const items = [];
 
-~~需 注意 如果使用VScode之类编辑器，需要将右下角行尾序列改为LF~~(windows \r\n 与linux \n 换行符号不同 增加 ` tr -d '\r' `以去除)。
+  const dirs = fs.readdirSync(docsDir).filter(f =>
+    fs.statSync(path.join(docsDir, f)).isDirectory() &&
+    !f.startsWith('.') &&
+    f !== '.vitepress'
+  ).sort();
+
+  for (const dir of dirs) {
+    const files = fs.readdirSync(path.join(docsDir, dir))
+      .filter(f => f.endsWith('.md') && f !== 'index.md')
+      .map(f => f.replace(/\.md$/, ''))
+      .sort();
+
+    if (files.length > 0) {
+      items.push({
+        text: dir,
+        link: `/${dir}/`,
+        items: files.map(f => ({ text: f, link: `/${dir}/${f}` }))
+      });
+    }
+  }
+
+  return items;
+}
+// https://vitepress.dev/reference/site-config
+export default defineConfig({
+  base: '/./', 
+  title: "学，行之，上也",
+  description: "欢迎来到淅寒的博客",
+  lastUpdated: true,
+  themeConfig: {
+    // https://vitepress.dev/reference/default-theme-config
+    logo: '/favicon.svg',
+    search: {
+      provider: 'local'
+    },
+    lastUpdated: {
+      text: 'Updated at',
+      formatOptions: {
+        dateStyle: 'full',
+        timeStyle: 'medium'
+      }
+    },
+    nav: [
+      { text: 'Home', link: '/' },
+      { text: '文档', link: '/docs/index.md' }
+    ],
+
+    sidebar: generateSidebarFromFS(),
+    socialLinks: [
+      { icon: 'github', link: 'https://github.xi-han.top/JuckyLee668' }
+    ]
+  }
+})
+
+```
+
 
 
 ## github配置
@@ -70,11 +132,6 @@ jobs:
         run: npm ci # 或 pnpm install / yarn install / bun install
       - name: Build with VitePress
         run: |
-          cd .vitepress
-          chmod +x filelinker.sh
-          ./filelinker.sh
-          cat config.mts
-          cd ..
           npm run docs:build # 打包前端代码到生产环境（目标路径为：./.vitepress/dist）
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
