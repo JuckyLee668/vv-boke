@@ -1,6 +1,6 @@
-# EMQX
+# windows上使用EMQX
 
-[Directory listing for EMQX: / | EMQ](https://www.emqx.com/zh/downloads/broker)
+[MQTTX 下载](https://mqttx.app/zh/downloads)
 
 windows下进入bin目录
 
@@ -10,6 +10,10 @@ windows下进入bin目录
 
 [EMQX Dashboard localhost:10803](http://127.0.0.1:18083)
 初始 -u admin -P public
+
+# Ubuntu上使用nanomq
+
+
 # AT指令的使用
 ## AT指令连接EMQX
 
