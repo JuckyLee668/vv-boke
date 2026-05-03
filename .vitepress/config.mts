@@ -40,6 +40,7 @@ export default defineConfig({
   title: '学，行之，上也',
   description: '欢迎来到淅寒的博客',
   lastUpdated: true,
+  appearance: 'dark',
   themeConfig: {
     logo: '/favicon.svg',
     search: {
