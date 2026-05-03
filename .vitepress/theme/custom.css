@@ -45,8 +45,6 @@
   --vp-code-bg: rgba(0, 0, 0, 0.3);
   --vp-code-tab-bg: rgba(255, 255, 255, 0.04);
   --vp-code-tab-divider: rgba(255, 255, 255, 0.06);
-  --vp-code-copy-code-bg: rgba(255, 255, 255, 0.06);
-  --vp-code-copy-code-hover-bg: rgba(255, 255, 255, 0.1);
 
   /* 自定义块 */
   --vp-custom-block-tip-bg: rgba(184, 160, 255, 0.08);
@@ -61,7 +59,7 @@
   --vp-custom-block-danger-text: #ff6b6b;
 }
 
-/* 大标题渐变（模仿主页 hero-title） */
+/* ===== 渐变标题 ===== */
 :root .VPNavBarTitle .title,
 :root .VPHero .name,
 :root .VPHero h1 {
@@ -71,7 +69,7 @@
   background-clip: text;
 }
 
-/* 导航栏 */
+/* ===== 导航栏 ===== */
 :root .VPNavBar {
   background: rgba(15, 19, 36, 0.92) !important;
   backdrop-filter: blur(14px) !important;
@@ -86,7 +84,6 @@
   background: rgba(15, 19, 36, 0.92) !important;
 }
 
-/* 导航链接 */
 :root .VPNavBarMenuLink,
 :root .VPNavBarMenuGroup .button {
   color: rgba(255, 255, 255, 0.75) !important;
@@ -97,7 +94,37 @@
   color: #b8a0ff !important;
 }
 
-/* 侧边栏 */
+/* ===== 搜索按钮 — 低调融入 ===== */
+:root .DocSearch-Button {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  height: 36px !important;
+  transition: all 0.2s ease !important;
+}
+
+:root .DocSearch-Button:hover {
+  border-color: rgba(184, 160, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+:root .DocSearch-Button .DocSearch-Search-Icon {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+:root .DocSearch-Button .DocSearch-Button-Placeholder,
+:root .DocSearch-Button .DocSearch-Button-Keys {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+
+:root .DocSearch-Button .DocSearch-Button-Key {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ===== 侧边栏 ===== */
 :root .VPSidebar {
   background: rgba(15, 19, 36, 0.95) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
@@ -111,51 +138,120 @@
   color: #b8a0ff !important;
 }
 
-/* 卡片式内容块 */
-:root .VPDoc .content-container > p,
-:root .VPDoc .content-container > div {
-  color: rgba(255, 255, 255, 0.77);
-  line-height: 1.9;
-}
-
-/* 主页 Hero 区域 */
+/* ===== 主页 — Hero 区域（居中窄宽度） ===== */
 :root .VPHero {
   background: rgba(22, 28, 48, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 32px;
-  padding: 48px;
-  margin: 16px 0;
+  padding: 48px 56px;
+  margin: 24px auto;
+  max-width: 960px;
   backdrop-filter: blur(14px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 :root .VPHero .tagline {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  max-width: 100%;
 }
 
-/* Features 卡片 */
+:root .VPHero .name {
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  line-height: 1.3;
+}
+
+/* ===== Hero 按钮 — 柔和统一 ===== */
+/* brand 按钮（文档总览）— 紫色渐变 */
+:root .VPHero .action[data-v-f6f2bb90] .brand,
+:root .VPHero .actions a.brand {
+  background: linear-gradient(135deg, #b8a0ff, #8b6fe8) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 28px !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 4px 16px rgba(184, 160, 255, 0.2) !important;
+}
+
+:root .VPHero .action[data-v-f6f2bb90] .brand:hover,
+:root .VPHero .actions a.brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(184, 160, 255, 0.35) !important;
+}
+
+/* alt 按钮（项目展示）— 透明边框低调 */
+:root .VPHero .action[data-v-f6f2bb90] .alt,
+:root .VPHero .actions a.alt {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px !important;
+  padding: 12px 28px !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  transition: all 0.25s ease !important;
+}
+
+:root .VPHero .action[data-v-f6f2bb90] .alt:hover,
+:root .VPHero .actions a.alt:hover {
+  color: #b8a0ff !important;
+  border-color: rgba(184, 160, 255, 0.4) !important;
+  background: rgba(184, 160, 255, 0.06) !important;
+  transform: translateY(-2px);
+}
+
+/* ===== Features 卡片 — 与 Hero 对齐 ===== */
+:root .VPFeatures {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+:root .VPFeatures .container {
+  max-width: 100% !important;
+}
+
+:root .VPFeatures .container .items {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
 :root .VPFeatures .container .item {
-  background: rgba(22, 28, 48, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  backdrop-filter: blur(14px);
+  background: rgba(22, 28, 48, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 18px !important;
+  padding: 28px 24px !important;
+  backdrop-filter: blur(14px) !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex: 1 1 280px !important;
+  max-width: 300px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08) !important;
 }
 
 :root .VPFeatures .container .item:hover {
   transform: translateY(-4px);
-  border-color: rgba(184, 160, 255, 0.3);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  border-color: rgba(184, 160, 255, 0.25) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
 }
 
 :root .VPFeatures .container .item .title {
   color: #d8c4ff;
+  font-size: 1.15rem;
 }
 
 :root .VPFeatures .container .item .details {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  line-height: 1.7;
 }
 
-/* 链接颜色 */
+/* ===== 链接 ===== */
 :root a {
   color: #b8a0ff;
   transition: color 0.2s;
@@ -165,57 +261,33 @@
   color: #d8c4ff;
 }
 
-/* 表格 */
-:root table {
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
+/* ===== 表格 ===== */
+:root table { border-color: rgba(255, 255, 255, 0.08); }
 :root th,
-:root td {
-  border-color: rgba(255, 255, 255, 0.08);
-}
+:root td { border-color: rgba(255, 255, 255, 0.08); }
+:root tr:nth-child(2n) { background: rgba(255, 255, 255, 0.02); }
 
-:root tr:nth-child(2n) {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-/* 块引用 */
+/* ===== 块引用 ===== */
 :root blockquote {
   border-left-color: #b8a0ff;
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* 搜索框 */
-:root .DocSearch-Button {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-
-:root .DocSearch-Button:hover {
-  border-color: rgba(184, 160, 255, 0.3) !important;
-}
-
-/* 页脚 */
+/* ===== 页脚 ===== */
 :root .VPFooter {
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.4);
 }
 
-/* 滚动条 */
-:root ::-webkit-scrollbar-track {
-  background: rgba(15, 19, 36, 0.5);
-}
-
+/* ===== 滚动条 ===== */
+:root ::-webkit-scrollbar-track { background: rgba(15, 19, 36, 0.5); }
 :root ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
+:root ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
-:root ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* 代码高亮行 */
+/* ===== 代码 ===== */
 :root .vp-code-group .tabs {
   background: rgba(255, 255, 255, 0.04) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
@@ -229,7 +301,7 @@
   color: #b8a0ff !important;
 }
 
-/* 文档内容卡片化 */
+/* ===== 文档内容卡片 ===== */
 :root .content-container {
   background: rgba(22, 28, 48, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -237,12 +309,4 @@
   padding: 32px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(14px);
-}
-
-/* 项目展示卡片网格 */
-:root .card-grid,
-:root .VPTeamMembers.small .container .item {
-  background: rgba(22, 28, 48, 0.92) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 18px !important;
 }
